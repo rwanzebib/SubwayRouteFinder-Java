@@ -1,0 +1,80 @@
+// NYC Subway Route Finder (Beginner-Friendly Java Version)
+// Rwan Zebib
+import java.util.*;
+
+public class SubwayRouteFinder {
+
+    public static void main(String[] args) {
+
+        // Sample subway map:
+        // Each train is mapped to the list of stations it stops at
+        Map<String, List<String>> subwayMap = new HashMap<>();
+
+        subwayMap.put("A", Arrays.asList("Inwood-207 St", "59 St", "42 St", "34 St", "14 St", "Canal St", "Jay St"));
+        subwayMap.put("1", Arrays.asList("Van Cortlandt Park", "96 St", "59 St", "42 St", "34 St", "14 St", "Chambers St"));
+        subwayMap.put("F", Arrays.asList("Jamaica-179 St", "47-50 St", "42 St", "34 St", "14 St", "Delancey St", "Jay St"));
+        subwayMap.put("6", Arrays.asList("Pelham Bay Park", "86 St", "59 St", "51 St", "33 St", "14 St", "Brooklyn Bridge"));
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("🚇 NYC Subway Route Finder");
+        System.out.println("---------------------------------");
+
+        // Ask user for start station
+        System.out.print("Enter your START station: ");
+        String start = scanner.nextLine();
+
+        // Ask user for end station
+        System.out.print("Enter your END station: ");
+        String end = scanner.nextLine();
+
+        // Find trains that serve the start station
+        List<String> startTrains = trainsStoppingAt(subwayMap, start);
+
+        // Find trains that serve the end station
+        List<String> endTrains = trainsStoppingAt(subwayMap, end);
+
+        System.out.println("\n---------------------------------");
+        System.out.println("🔍 Searching for routes...");
+        System.out.println("---------------------------------\n");
+
+        if (startTrains.isEmpty() || endTrains.isEmpty()) {
+            System.out.println("⚠️ One of these stations does not exist in the system.");
+            return;
+        }
+
+        // Find trains that serve BOTH stations
+        List<String> sameTrains = new ArrayList<>();
+        for (String t : startTrains) {
+            if (endTrains.contains(t)) {
+                sameTrains.add(t);
+            }
+        }
+
+        if (!sameTrains.isEmpty()) {
+            System.out.println("✅ You can take the following direct train(s): " + sameTrains);
+        } else {
+            System.out.println("❌ No direct train goes from " + start + " to " + end);
+            System.out.println("Try transferring at a major station like 42 St or 14 St.");
+        }
+
+        System.out.println("\nThanks for using the Subway Route Finder!");
+        scanner.close();
+    }
+
+    // Helper method: find which trains stop at a given station
+    public static List<String> trainsStoppingAt(Map<String, List<String>> map, String station) {
+        List<String> trains = new ArrayList<>();
+
+        for (String train : map.keySet()) {
+            List<String> stops = map.get(train);
+            for (String stop : stops) {
+                if (stop.equalsIgnoreCase(station)) {
+                    trains.add(train);
+                }
+            }
+        }
+
+        return trains;
+    }
+}
